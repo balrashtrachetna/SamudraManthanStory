@@ -18,9 +18,15 @@
 
    .banner-video video {
   width: 100%;
-  display: block;
+  height: 100%;
+  object-fit: cover;
 }
-
+.banner-video {
+  position: relative;
+  height: 45vh;          /* ⭐ reduced height */
+  max-height: 380px;
+  overflow: hidden;
+}
 
     h1 { margin-top: 20px; }
 
@@ -161,15 +167,20 @@
 }
 
 .banner-hint {
-  position: absolute;
-  bottom: 20px;
-  width: 100%;
-  text-align: center;
-  font-size: 18px;
+position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  
+  background: rgba(255, 243, 217, 0.95);
+  color: #6b4b34;             /* brown */
+  padding: 12px 22px;
+  border-radius: 30px;
+  font-size: 20px;
   font-weight: bold;
-  color: white;
-  text-shadow: 0 2px 6px rgba(0,0,0,0.6);
-  animation: bounce 1.8s infinite;
+  
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+  animation: floatHint 2s infinite;
 }
 
 
