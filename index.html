@@ -231,7 +231,7 @@ let questionReport = [];
 const questions = [
 
 {
-    time: 3,
+    time: 98.5,
     text: "When the gods and demons churned the great ocean (Samudra Manthan), what very precious thing did they want to get?",
     options: {
       A: "Amrut (nectar of immortality)",
@@ -240,27 +240,24 @@ const questions = [
     },
     correct: "A"
   },
+  
   {
-    time: 5,
-    text: "When the gods and demons churned the great ocean (Samudra Manthan), what very precious thing did they want to get?",
-    options: {
-      A: "Amrut (nectar of immortality)",
-      B: "Gold coins",
-      C: "A magic sword"
-    },
-    correct: "A"
-  },
-  {
-    time: 8,
+    time: 119.5,
     text: "In Riya’s case, what was the precious thing for which they should come together?",
     options: { A: "To Fight", B: "To Win Science Project", C: "To become Friends" },
     correct: "B"
   },
   {
-    time: 10,
+    time: 196.5,
     text: "What was the name of Lord Vishnu’s first avatar?",
     options: { A: "Shree Ram", B: "Narsimha", C: "Kurma" },
     correct: "C"
+  },
+   {
+    time: 239.5,
+    text: "Because Lord Mahadev held the poison in his throat and his neck turned blue, what name do we call him by?",
+    options: { A: "Neelkanth", B: "Vishwajeet", C: "Trinetra" },
+    correct: "A"
   }
   
 ];
@@ -269,7 +266,7 @@ function onYouTubeIframeAPIReady() {
   player = new YT.Player("player", {
     height: "500",
     width: "100%",
-    videoId: "Ju29dMgB6ts",
+    videoId: "6PC-Jvs8OE0",
     playerVars: { controls: 1, rel: 0 },
     events: { onStateChange: onPlayerStateChange }
   });
@@ -338,7 +335,6 @@ function exitFakeFullscreen() {
 /* QUESTION LOGIC */
 const overlay = document.getElementById("overlay");
 const celebration = document.getElementById("celebration");
-const celebrationVideo = document.getElementById("celebrationVideo");
 const qText = document.getElementById("question-text");
 const btnA = document.getElementById("btnA");
 const btnB = document.getElementById("btnB");
@@ -362,80 +358,42 @@ attemptsForCurrentQuestion = 0;   // ✅ RESET HERE
     firstAttemptCorrect: false
   };
 }
+
 function checkAnswer(val) {
   const q = questions[currentQuestionIndex];
   attemptsForCurrentQuestion++;
 
-  // track attempts
   questionReport[currentQuestionIndex].attempts++;
 
   if (val === q.correct) {
 
-    // ⭐ mark first-attempt success
     if (attemptsForCurrentQuestion === 1) {
       score++;
       questionReport[currentQuestionIndex].firstAttemptCorrect = true;
     }
 
+    // 1️⃣ Hide question
     overlay.style.display = "none";
-    celebration.style.display = "flex";
-    celebrationVideo.play();
 
-    setTimeout(() => {
-      celebration.style.display = "none";
-      celebrationVideo.pause();
+    // 2️⃣ Resume story ONLY
+    questionActive = false;
+    currentQuestionIndex++;
+    lastAllowedTime = player.getCurrentTime();
 
-      currentQuestionIndex++;
-      questionActive = false;
-      lastAllowedTime = player.getCurrentTime();
-     
-
-      if (currentQuestionIndex >= questions.length) {
-        allQuestionsCompleted = true;
-      }
-    }, 5000);
-	 player.playVideo();
-
-  } else {
-    wrongMsg.style.display = "block";
-  }
-}
-
-
-function checkAnswer1(val) {
-
-  const q = questions[currentQuestionIndex];
-  attemptsForCurrentQuestion++;
-  if (val === q.correct) {
-	 // ✅ Score only if correct on FIRST attempt
-    if (attemptsForCurrentQuestion === 1) {
-      score++;
+    if (currentQuestionIndex >= questions.length) {
+      allQuestionsCompleted = true;
     }
-	
-    overlay.style.display = "none";
-    celebration.style.display = "flex";
-    celebrationVideo.play();
 
-    setTimeout(() => {
-      celebration.style.display = "none";
-      celebrationVideo.pause();
-      currentQuestionIndex++;
-      questionActive = false;
-      lastAllowedTime = player.getCurrentTime();
-      player.playVideo();
-  
-	   if (currentQuestionIndex >= questions.length) {
-        allQuestionsCompleted = true;
-      } else {
-        player.playVideo();
-    
-      }
-	  
-    }, 1500);
+    player.playVideo(); // celebration is already inside video 🎉
+
   } else {
     wrongMsg.style.display = "block";
   }
 }
+
+
+
+
 
 btnA.onclick = () => checkAnswer("A");
 btnB.onclick = () => checkAnswer("B");
