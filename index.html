@@ -105,6 +105,23 @@ html, body {
   font-weight: bold;
   display: none;
 }
+  #kidMessage {
+  position: fixed;
+  bottom: 18%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #fff3d9;
+  color: #6b4b34;
+  padding: 12px 20px;
+  border-radius: 18px;
+  font-size: 18px;
+  font-weight: bold;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  z-index: 40000;
+}
 
 /* ===== SCORE BOARD ===== */
 #scoreBoard {
@@ -164,7 +181,9 @@ video::-webkit-media-controls-fullscreen-button {
   .avatar {
     width: 180px;
   }
+
 }
+
 
 
 </style>
@@ -407,7 +426,41 @@ function exitFakeFullscreen() {
 storyVideo.addEventListener("play", enterFakeFullscreen);
 storyVideo.addEventListener("ended", exitFakeFullscreen);
 
+
+const video = document.getElementById("storyVideo");
+
+let maxWatchedTime = 0;
+
+// Track natural progress
+video.addEventListener("timeupdate", () => {
+  if (!video.seeking && !questionActive) {
+    maxWatchedTime = Math.max(maxWatchedTime, video.currentTime);
+  }
+});
+
+// Block forward seek, allow rewind
+video.addEventListener("seeking", () => {
+  if (video.currentTime > maxWatchedTime + 0.3) {
+    video.currentTime = maxWatchedTime;
+    showMessage("Let’s not skip 😊 You’re doing great!");
+  }
+});
+
+function showMessage(text) {
+  const msg = document.getElementById("kidMessage");
+  msg.innerText = text;
+  msg.style.opacity = "1";
+
+  clearTimeout(msg.hideTimer);
+  msg.hideTimer = setTimeout(() => {
+    msg.style.opacity = "0";
+  }, 2000);
+}
+
+
+
 </script>
+<div id="kidMessage"></div>
 
 </body>
 </html>
