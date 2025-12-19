@@ -1,71 +1,90 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Welcome Story Page</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Welcome Story Page</title>
 
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      font-family: Arial, sans-serif;
-      background: #fffaf4;
-      text-align: center;
-      color: #6b4b34;
-	  overflow-x: hidden; /* ⭐ VERY IMPORTANT */
-    }
+<style>
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  background: #fffaf4;
+  text-align: center;
+  color: #6b4b34;
+  overflow-x: hidden;
+}
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+}
 
-   .banner-video video {
+
+/* ===== BANNER ===== */
+.banner-video {
+  position: relative;
+  height: 380px;
+  overflow: hidden;
+}
+.banner-video video {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
-.banner-video {
-  position: relative;
-  height: 85vh;          /* ⭐ reduced height */
-  max-height: 380px;
-  overflow: hidden;
+.banner-hint {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(255,243,217,0.95);
+  color: #6b4b34;
+  padding: 12px 22px;
+  border-radius: 30px;
+  font-size: 20px;
+  font-weight: bold;
 }
 
-    h1 { margin-top: 20px; }
+/* ===== STORY VIDEO ===== */
 
-    .hero {
-      display: flex;
-      justify-content: center;
-      gap: 20px;
-      flex-wrap: wrap;
-      padding: 20px;
-    }
+#storyVideo {
+  width: 100%;
+  background: black;
+}
 
-    .avatar {
-      width: 150px;
-      border-radius: 50%;
-      border: 6px solid #fff6ea;
-      box-shadow: 0 6px 20px rgba(107,61,35,0.12);
-    }
 
-    .quiz-note {
-      margin: 12px auto;
-      background: #fff3d9;
-      padding: 12px;
-      border-radius: 10px;
-      max-width: 900px;
-    }
+#player-wrapper.fullscreen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  max-width: none;
+  margin: 0;
+  background: black;
+  z-index: 9999;
+}
 
-    /* QUESTION OVERLAY */
-    #overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.45);
-      backdrop-filter: blur(6px);
-      display: none;
-      justify-content: center;
-      align-items: center;
-      z-index: 20000;
-    }
+#player-wrapper.fullscreen video {
+  width: 100vw;
+  height: 100vh;
+  object-fit: contain; /* or cover if you want */
+}
 
-    #question-box {
+
+/* ===== QUESTION OVERLAY ===== */
+#overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 20000;
+}
+ #question-box {
       background: rgba(255,255,255,0.95);
       padding: 22px;
       border-radius: 14px;
@@ -74,132 +93,88 @@
       box-shadow: 0 8px 20px rgba(0,0,0,0.25);
     }
 
-    .opt-btn {
-      padding: 10px 18px;
-      margin: 8px;
-      font-size: 16px;
-      border-radius: 6px;
-      background: #fff;
-      border: 1px solid #ccc;
-      cursor: pointer;
-    }
-
-    #wrong-msg {
-      color: red;
-      font-weight: bold;
-      display: none;
-      margin-top: 8px;
-    }
-
-    /* 🎉 CELEBRATION */
-    #celebration {
-      position: fixed;
-      inset: 0;
-      background: rgba(255,255,255,0.6);
-      display: none;
-      justify-content: center;
-      align-items: center;
-      z-index: 10000;
-    }
-
-    #celebration video {
-  position: absolute;
-  inset: 0;
-  width: 100vw;
-  height: 100vh;
-  object-fit: contain; /* or cover */
-  border-radius: 0;
+.opt-btn {
+  padding: 10px 18px;
+  margin: 8px;
+  font-size: 16px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+#wrong-msg {
+  color: red;
+  font-weight: bold;
+  display: none;
 }
 
-
-    /* 🚫 SKIP MESSAGE */
-    #skip-msg {
-      position: fixed;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: #fff3d9;
-      border: 2px solid #ff8c00;
-      padding: 10px 16px;
-      border-radius: 20px;
-      font-size: 14px;
-      display: none;
-      z-index: 10001;
-    }
-	
-	/* NORMAL MODE */
-#player-wrapper {
-  margin: auto;
-  width: 90vw;
-  max-width: 900px;
-  position: relative;
-  z-index: 1;
-}
-
-/* FAKE FULLSCREEN MODE */
-#player-wrapper.fullscreen {
+/* ===== SCORE BOARD ===== */
+#scoreBoard {
   position: fixed;
   inset: 0;
-  background: black;
-  z-index: 9999;
-}
-
-#player-wrapper.fullscreen iframe {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-}
-
-#readyOverlay {
-  position: fixed;
-  inset: 0;                 /* ⭐ replaces top/left/width/height */
-  width: 100vw;             /* ⭐ force viewport width */
-  height: 100vh;            /* ⭐ force viewport height */
+  background: rgba(255,255,255,0.95);
   display: none;
   justify-content: center;
   align-items: center;
-  background: rgba(255, 248, 220, 0.97);
-  z-index: 999999;
-  margin: 0;
-  padding: 0;
-  left: 0;                  /* ⭐ force alignment */
+  z-index: 30000;
 }
 
-.banner-hint {
-position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  
-  background: rgba(255, 243, 217, 0.95);
-  color: #6b4b34;             /* brown */
-  padding: 12px 22px;
-  border-radius: 30px;
-  font-size: 20px;
-  font-weight: bold;
-  
-  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
-  animation: floatHint 2s infinite;
+ .avatar {
+      width: 150px;
+      border-radius: 50%;
+      border: 6px solid #fff6ea;
+      box-shadow: 0 6px 20px rgba(107,61,35,0.12);
+    }
+
+video::-webkit-media-controls-fullscreen-button {
+  display: none;
+}
+
+.hero {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  max-width: 1000px;
+  margin: 30px auto;
+  padding: 20px;
+}
+
+.avatar {
+  width: 220px;
+  height: auto;
+  border-radius: 18px;
+  box-shadow: 0 6px 14px rgba(0,0,0,0.15);
+}
+
+.hero-text {
+  max-width: 600px;
+  text-align: left;
+  font-size: 18px;
+  line-height: 1.6;
+}
+@media (max-width: 768px) {
+  .hero {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .hero-text {
+    text-align: center;
+  }
+
+  .avatar {
+    width: 180px;
+  }
 }
 
 
-  </style>
+</style>
 </head>
 
 <body>
 
-<div id="celebration">
-  <video id="celebrationVideo" src="celebration.mp4" playsinline></video>
-</div>
-
-<div id="skip-msg">😊 Let’s answer the question first!</div>
-
+<!-- 🎬 BANNER -->
 <div class="banner-video">
-<div class="banner-hint">
-  <span>👇 Scroll down to start the story 👇</span>
-</div>
-
+  <div class="banner-hint">👇 Scroll down to start the story 👇</div>
   <video autoplay muted loop playsinline>
     <source src="welcome_banner.mp4" type="video/mp4"/>
   </video>
@@ -209,358 +184,45 @@ position: absolute;
 
 <div class="hero">
   <img src="riya.jpeg" class="avatar">
-  <div class="hero-text">
-    <p>We are so excited you are here! Let’s start this magical adventure together.</p>
-    <p>Riya has a big problem today! She has a school project…</p>
-  </div>
+   <div class="hero-text">
+      <p>We are so excited you are here! Let’s start this magical adventure together.</p>
+
+      <p>Riya has a big problem today! She has a school project to finish…  
+      but she doesn’t know where to start. She feels confused and worried.</p>
+
+      <p>But guess what? Her teacher gives her an amazing idea…  
+      and this idea turns into a magical story for you!</p>
+
+      <p>Do you want to know how Riya solves her problem?  
+      Just click the video below and watch the story!</p>
+    </div>
 </div>
 
 <div class="quiz-note">🎯 During the story the video will pause & ask fun questions!</div>
 
+<p>Click the video below and enjoy the story 🎉</p>
+
+<!-- 🎥 STORY VIDEO -->
 <div id="player-wrapper">
-  <div id="player"></div>
+  <video id="storyVideo" controls playsinline preload="auto" controlsList="nofullscreen nodownload noplaybackrate">
+  
+    <source
+      src="https://res.cloudinary.com/dqyznfaep/video/upload/v1766103486/SamdruManthan_digital_2_fubqnl.mp4"
+      type="video/mp4">
+  </video>
 </div>
 
-
+<!-- ❓ QUESTION OVERLAY -->
 <div id="overlay">
   <div id="question-box">
     <div id="question-text"></div>
     <button class="opt-btn" id="btnA"></button>
     <button class="opt-btn" id="btnB"></button>
     <button class="opt-btn" id="btnC"></button>
-    <div id="wrong-msg">Oops! Try again champ 😊</div>
+    <div id="wrong-msg">Oops! Try again 😊</div>
   </div>
 </div>
 
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
-<script src="pdfReport.js"></script>
-
-<script>
-/* LOAD YOUTUBE API */
-let tag = document.createElement("script");
-tag.src = "https://www.youtube.com/iframe_api";
-document.body.appendChild(tag);
-
-let player;
-let currentQuestionIndex = 0;
-let questionActive = false;
-let lastAllowedTime = 0;
-let score = 0;
-let attemptsForCurrentQuestion = 0;
-let allQuestionsCompleted = false;
-let questionReport = [];
-
-
-
-
-const questions = [
-
-{
-    time: 98.5,
-    text: "When the gods and demons churned the great ocean (Samudra Manthan), what very precious thing did they want to get?",
-    options: {
-      A: "Amrut (nectar of immortality)",
-      B: "Gold coins",
-      C: "A magic sword"
-    },
-    correct: "A"
-  },
-  
-  {
-    time: 119.5,
-    text: "In Riya’s case, what was the precious thing for which they should come together?",
-    options: { A: "To Fight", B: "To Win Science Project", C: "To become Friends" },
-    correct: "B"
-  },
-  {
-    time: 196.5,
-    text: "What was the name of Lord Vishnu’s first avatar?",
-    options: { A: "Shree Ram", B: "Narsimha", C: "Kurma" },
-    correct: "C"
-  },
-   {
-    time: 239.5,
-    text: "Because Lord Mahadev held the poison in his throat and his neck turned blue, what name do we call him by?",
-    options: { A: "Neelkanth", B: "Vishwajeet", C: "Trinetra" },
-    correct: "A"
-  }
-  
-];
-
-function onYouTubeIframeAPIReady() {
-  player = new YT.Player("player", {
-  width: "100%",
-  height: "500",
-  videoId: "6PC-Jvs8OE0",
-  playerVars: {
-    controls: 0,        // ❌ hides control bar
-    rel: 0,
-    modestbranding: 1,  // ❌ reduces YouTube logo
-    fs: 0,              // ❌ disables fullscreen button
-    iv_load_policy: 3,  // ❌ hides annotations
-    disablekb: 1        // ❌ disables keyboard shortcuts
-  },
-  events: {
-    onStateChange: onPlayerStateChange
-  }
-});
-}
-
-function onPlayerStateChange(e) {
-  if (e.data === YT.PlayerState.PLAYING) {
-    enterFakeFullscreen();
-    //guardSeek();
-    checkTimeLoop();
-  }
-  if (e.data === YT.PlayerState.ENDED) {
-    if (allQuestionsCompleted) {
-      showScoreBoard();
-    }
-  }
-}
-
-/* 🔒 BLOCK FORWARD SEEK */
-function guardSeek() {
-  setInterval(() => {
-    if (!player || questionActive) return;
-
-    const now = player.getCurrentTime();
-    if (now > lastAllowedTime + 1) {
-      player.seekTo(lastAllowedTime, true);
-      showSkipMsg();
-    } else {
-      lastAllowedTime = now;
-    }
-  }, 500);
-}
-
-function showSkipMsg() {
-  const msg = document.getElementById("skip-msg");
-  msg.style.display = "block";
-  setTimeout(() => msg.style.display = "none", 2000);
-}
-
-function checkTimeLoop() {
-  let check = setInterval(() => {
-    if (questionActive) return;
-
-    const q = questions[currentQuestionIndex];
-    if (!q) return clearInterval(check);
-
-    if (player.getCurrentTime() >= q.time) {
-      showQuestion(q);
-      questionActive = true;
-    }
-  }, 200);
-}
-
-const wrapper = document.getElementById("player-wrapper");
-
-function enterFakeFullscreen() {
-  wrapper.classList.add("fullscreen");
-  document.body.style.overflow = "hidden";
-}
-
-function exitFakeFullscreen() {
-  wrapper.classList.remove("fullscreen");
-  document.body.style.overflow = "";
-}
-
-/* QUESTION LOGIC */
-const overlay = document.getElementById("overlay");
-const celebration = document.getElementById("celebration");
-const qText = document.getElementById("question-text");
-const btnA = document.getElementById("btnA");
-const btnB = document.getElementById("btnB");
-const btnC = document.getElementById("btnC");
-const wrongMsg = document.getElementById("wrong-msg");
-
-function showQuestion(q) {
-attemptsForCurrentQuestion = 0;   // ✅ RESET HERE
-  player.pauseVideo();
-  qText.innerText = q.text;
-  btnA.innerText = q.options.A;
-  btnB.innerText = q.options.B;
-  btnC.innerText = q.options.C;
-  wrongMsg.style.display = "none";
-  overlay.style.display = "flex";
-  
-  // 🔍 Track question
-  questionReport[currentQuestionIndex] = {
-    question: q.text,
-    attempts: 0,
-    firstAttemptCorrect: false
-  };
-}
-
-function checkAnswer(val) {
-  const q = questions[currentQuestionIndex];
-  attemptsForCurrentQuestion++;
-
-  questionReport[currentQuestionIndex].attempts++;
-
-  if (val === q.correct) {
-
-    if (attemptsForCurrentQuestion === 1) {
-      score++;
-      questionReport[currentQuestionIndex].firstAttemptCorrect = true;
-    }
-
-    // 1️⃣ Hide question
-    overlay.style.display = "none";
-
-    // 2️⃣ Resume story ONLY
-    questionActive = false;
-    currentQuestionIndex++;
-    lastAllowedTime = player.getCurrentTime();
-
-    if (currentQuestionIndex >= questions.length) {
-      allQuestionsCompleted = true;
-    }
-
-    player.playVideo(); // celebration is already inside video 🎉
-
-  } else {
-    wrongMsg.style.display = "block";
-  }
-}
-
-
-
-
-
-btnA.onclick = () => checkAnswer("A");
-btnB.onclick = () => checkAnswer("B");
-btnC.onclick = () => checkAnswer("C");
-
-
-
-function showScoreBoard() {
-  const board = document.getElementById("scoreBoard");
-  const text = document.getElementById("scoreText");
-
-  text.innerText = `You scored ${score} out of ${questions.length} ⭐`;
-
-  
-
-  board.style.display = "flex";
-}
-
-
-function closeScoreBoard() {
-  document.getElementById("scoreBoard").style.display = "none";
-  exitFakeFullscreen(); // optional – exits fake fullscreen
-}
-
-function shareOnWhatsApp() {
-	
-	// Example: call when score board is displayed
-generatePDFReport(questionReport, score, questions.length);
-
-  
-}
-
-
-function generateShareData() {
-  const total = questions.length;
-
-  return (
-    `🌟 Child Story Learning Report 🌟\n\n` +
-    `Score: ${score} / ${total}\n` +
-    `Learning through interactive storytelling 📖✨\n\n` +
-    `– Bal Rashtra Chetna`
-  );
-}
-
-
-function generateQRCode(fullNumber) {
-  const msg = encodeURIComponent(generateShareData());
-  const qrData = `https://api.whatsapp.com/send?phone=${fullNumber}&text=${msg}`;
-
-  const qrUrl =
-    `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=` +
-    encodeURIComponent(qrData);
-
-  document.getElementById("qrImage").src = qrUrl;
-}
-
-
-
-
-function enableShareButton() {
-  const phone = document.getElementById("parentPhone").value.trim();
-  const btn = document.getElementById("shareBtn");
-
-  if (/^\d{10,13}$/.test(phone)) {
-    btn.disabled = false;
-    btn.style.background = "#25D366";
-    btn.style.cursor = "pointer";
-  } else {
-    btn.disabled = true;
-    btn.style.background = "#a5d6b3";
-    btn.style.cursor = "not-allowed";
-  }
-}
-
-function isMobileDevice() {
-  return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-}
-
-function checkPhoneInput() {
-  const phone = document.getElementById("parentPhone").value.trim();
-  const code = document.getElementById("countryCode").value;
-
-  const tick = document.getElementById("validTick");
-  const waBtn = document.getElementById("waButton");
-  const qrArea = document.getElementById("qrArea");
-  const qrImg = document.getElementById("qrImage");
-
-  const isMobile = isMobileDevice();
-
-  // 🔄 RESET UI (always first)
-  tick.style.display = "none";
-  waBtn.style.display = "none";
-  qrArea.style.display = "none";
-  qrImg.style.display = "none";
-
-  // ⛔ Do nothing until some digits are typed
-  if (phone.length === 0) return;
-
-  let isValid = false;
-  let fullNumber = "";
-
-  // 🇮🇳 INDIA RULE: exactly 10 digits, starts with 6–9
-  if (code === "91") {
-    isValid = /^[6-9]\d{9}$/.test(phone);
-    fullNumber = "91" + phone;
-  }
-  // 🌍 INTERNATIONAL RULE
-  else {
-    isValid = /^\d{7,15}$/.test(phone);
-    fullNumber = code + phone;
-  }
-
-  if (!isValid) return; // ⛔ wait till FULL valid number
-
-  // ✅ NOW show UI
-  tick.style.display = "inline";
-
-  if (isMobile) {
-    waBtn.style.display = "inline-block";
-  } else {
-    qrArea.style.display = "block";
-    qrImg.style.display = "block";
-    generateQRCode(fullNumber);
-  }
-}
-
-
-
-
-
-</script>
 
 <!-- 🏆 SCORE BOARD -->
 <div id="scoreBoard" style="
@@ -619,13 +281,133 @@ function checkPhoneInput() {
   </div>
 </div>
 
-<div id="readyOverlay">
-  <div class="readyBox">
-    <h1>🎉 You did a GREAT job! 🎉</h1>
-    <p>✨ Are you ready to see your score? ✨</p>
-  </div>
-</div>
 
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="pdfReport.js"></script>
+
+<script>
+const storyVideo = document.getElementById("storyVideo");
+const wrapper = document.getElementById("player-wrapper");
+const wrongMsg = document.getElementById("wrong-msg");
+
+let currentQuestionIndex = 0;
+let questionActive = false;
+let score = 0;
+let questionReport = [];
+
+const questions = [
+
+{
+    time: 98.5,
+    text: "When the gods and demons churned the great ocean (Samudra Manthan), what very precious thing did they want to get?",
+    options: {
+      A: "1. Amrut (nectar of immortality)",
+      B: "2. Gold coins",
+      C: "3. A magic sword"
+    },
+    correct: "A"
+  },
+  
+  {
+    time: 119.5,
+    text: "In Riya’s case, what was the precious thing for which they should come together?",
+    options: { A: "1. To Fight", B: "2. To Win Science Project", C: "3. To become Friends" },
+    correct: "B"
+  },
+  {
+    time: 196.5,
+    text: "What was the name of Lord Vishnu’s first avatar?",
+    options: { A: "1. Shree Ram", B: "2. Narsimha", C: "3. Kurma" },
+    correct: "C"
+  },
+   {
+    time: 239.5,
+    text: "Because Lord Mahadev held the poison in his throat and his neck turned blue, what name do we call him by?",
+    options: { A: "1. Neelkanth", B: "2. Vishwajeet", C: "2. Trinetra" },
+    correct: "A"
+  }
+  
+];
+
+storyVideo.addEventListener("play", () => {
+  wrapper.classList.add("fullscreen");
+  document.body.style.overflow = "hidden";
+});
+
+storyVideo.addEventListener("timeupdate", () => {
+  if (questionActive) return;
+  const q = questions[currentQuestionIndex];
+  if (q && storyVideo.currentTime >= q.time) {
+    showQuestion(q);
+  }
+});
+
+storyVideo.addEventListener("ended", () => {
+  document.getElementById("scoreText").innerText =
+    `You scored ${score} / ${questions.length} ⭐`;
+  document.getElementById("scoreBoard").style.display = "flex";
+});
+
+function showQuestion(q) {
+  questionActive = true;
+  storyVideo.pause();
+  document.getElementById("question-text").innerText = q.text;
+  btnA.innerText = q.options.A;
+  btnB.innerText = q.options.B;
+  btnC.innerText = q.options.C;
+  wrongMsg.style.display = "none";
+  overlay.style.display = "flex";
+
+  questionReport[currentQuestionIndex] = {
+    question: q.text,
+    attempts: 0,
+    firstAttemptCorrect: false
+  };
+}
+
+function checkAnswer(val) {
+  const q = questions[currentQuestionIndex];
+  questionReport[currentQuestionIndex].attempts++;
+
+  if (val === q.correct) {
+    if (questionReport[currentQuestionIndex].attempts === 1) {
+      score++;
+      questionReport[currentQuestionIndex].firstAttemptCorrect = true;
+    }
+    overlay.style.display = "none";
+    questionActive = false;
+    currentQuestionIndex++;
+    storyVideo.play();
+  } else {
+    document.getElementById("wrong-msg").style.display = "block";
+  }
+}
+
+btnA.onclick = () => checkAnswer("A");
+btnB.onclick = () => checkAnswer("B");
+btnC.onclick = () => checkAnswer("C");
+
+function closeScoreBoard() {
+  document.getElementById("scoreBoard").style.display = "none";
+  wrapper.classList.remove("fullscreen");
+  document.body.style.overflow = "";
+}
+
+function enterFakeFullscreen() {
+  wrapper.classList.add("fullscreen");
+  document.body.style.overflow = "hidden";
+}
+
+function exitFakeFullscreen() {
+  wrapper.classList.remove("fullscreen");
+  document.body.style.overflow = "";
+}
+
+storyVideo.addEventListener("play", enterFakeFullscreen);
+storyVideo.addEventListener("ended", exitFakeFullscreen);
+
+</script>
 
 </body>
 </html>
