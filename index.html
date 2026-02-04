@@ -291,7 +291,7 @@ video::-webkit-media-controls-fullscreen-button {
   <video id="storyVideo" controls playsinline preload="auto" controlsList="nofullscreen nodownload noplaybackrate">
   
     <source
-      src="your_story_video.mp4"
+      src="https://res.cloudinary.com/dqyznfaep/video/upload/v1770192344/your_story_video_fefbda.mp4" 
       type="video/mp4">
   </video>
 </div>
@@ -564,7 +564,7 @@ function checkCode() {
 }
 
 video.addEventListener("timeupdate", () => {
-  if (video.currentTime > 22 && !window.popupShown) {
+  if (video.currentTime > 125 && !window.popupShown) {
     window.popupShown = true;
     showHeroPopup();
   }
