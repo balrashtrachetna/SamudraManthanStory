@@ -184,6 +184,71 @@ video::-webkit-media-controls-fullscreen-button {
 
 }
 
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50000; /* 🔥 MUST be higher than video */
+}
+
+
+.popup {
+  background: linear-gradient(145deg, #1e3c72, #2a5298);
+  border-radius: 18px;
+  padding: 28px 24px;
+  width: 90%;
+  max-width: 420px;
+  text-align: center;
+  color: #fff;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+}
+
+.popup input {
+  width: 70%;
+  padding: 10px 14px;
+  border-radius: 25px;
+  border: none;
+  text-align: center;
+}
+
+.popup button {
+  background: #ffd166;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 25px;
+  cursor: pointer;
+}
+
+.message {
+  margin-top: 14px;
+  min-height: 24px;
+}
+.success { color: #b9fbc0; }
+.error { color: #ffd6d6; }
+
+.popup {
+  max-height: 75vh;          /* never exceed screen height */
+  overflow-y: auto;          /* allow vertical scrolling */
+  -webkit-overflow-scrolling: touch; /* smooth mobile scroll */
+}
+
+/* Optional: nicer scrollbar (works on most browsers) */
+.popup::-webkit-scrollbar {
+  width: 6px;
+}
+
+.popup::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 10px;
+}
+
+.popup::-webkit-scrollbar-track {
+  background: transparent;
+}
+
 
 
 </style>
@@ -226,7 +291,7 @@ video::-webkit-media-controls-fullscreen-button {
   <video id="storyVideo" controls playsinline preload="auto" controlsList="nofullscreen nodownload noplaybackrate">
   
     <source
-      src="https://res.cloudinary.com/dqyznfaep/video/upload/v1766103486/SamdruManthan_digital_2_fubqnl.mp4"
+      src="your_story_video.mp4"
       type="video/mp4">
   </video>
 </div>
@@ -327,6 +392,9 @@ const questions = [
     },
     correct: "A"
   },
+  
+ 
+  
   
   {
     time: 119.5,
@@ -458,9 +526,85 @@ function showMessage(text) {
 }
 
 
+const HERO_CODE = "MANDAR"; // your chosen code
+
+function showHeroPopup() {
+  storyVideo.pause();
+  questionActive = true;
+
+  document.getElementById("codeInput").value = "";
+  document.getElementById("messageBox").innerHTML = "";
+
+  document.getElementById("heroOverlay").style.display = "flex";
+}
+
+
+
+function checkCode() {
+  const input = document.getElementById("codeInput").value.trim().toUpperCase();
+  const messageBox = document.getElementById("messageBox");
+
+  if (input === HERO_CODE) {
+    messageBox.innerHTML =
+      "🦸 Hurray! Mission Complete! Now let’s see what the Devas and Asuras did…";
+    messageBox.className = "message success";
+
+ setTimeout(() => {
+  document.getElementById("heroOverlay").style.display = "none";
+  questionActive = false;
+  storyVideo.play();
+}, 1500);
+
+
+  } else {
+    messageBox.innerHTML =
+      "Hmm… that doesn’t unlock the story yet.<br>Try again with your grown-up 😊";
+    messageBox.className = "message error";
+  }
+}
+
+video.addEventListener("timeupdate", () => {
+  if (video.currentTime > 22 && !window.popupShown) {
+    window.popupShown = true;
+    showHeroPopup();
+  }
+});
 
 </script>
 <div id="kidMessage"></div>
+
+<!-- HERO CODE OVERLAY -->
+<div class="overlay" id="heroOverlay" style="display:none;">
+  <div class="popup">
+    <h2>🚨 Emergency in the Ocean! 😱</h2>
+
+ <p>
+  ⚠️ <strong>Uh-oh!</strong> Mandar Parvat is shrinking!<br><br>
+ 
+
+  🦸 <strong>Mountain Hero Mission</strong><br>
+  Complete the hero activity sheet to save the mountain 🌄<br><br>
+
+  🔑 Ask your grown-up for the <strong>Hero Code</strong>
+</p>
+
+
+    <input
+      type="text"
+      id="codeInput"
+      placeholder="Enter Hero Code"
+    />
+
+    <br> <br>
+
+    <button onclick="checkCode()">Unlock the Story</button>
+
+    <div class="message" id="messageBox"></div>
+	 <div style="font-size:13px; opacity:0.8; margin-top:12px;">
+  ⬇️ Scroll to read and unlock the story
+</div>
+  </div>
+</div>
 
 </body>
 </html>
