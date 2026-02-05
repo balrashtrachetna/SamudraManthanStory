@@ -527,6 +527,9 @@ function showMessage(text) {
 
 
 const HERO_CODE = "MANDAR"; // your chosen code
+let heroPopupShown = false;
+let heroPopupEndShown = false;
+
 
 function showHeroPopup() {
   storyVideo.pause();
@@ -564,11 +567,43 @@ function checkCode() {
 }
 
 video.addEventListener("timeupdate", () => {
-  if (video.currentTime > 125 && !window.popupShown) {
-    window.popupShown = true;
+
+  if (questionActive) return;
+
+  if (video.currentTime > 175 && !heroPopupShown) {
+    heroPopupShown = true;
     showHeroPopup();
   }
+
 });
+
+
+function showHeroPopupEnd() {
+  storyVideo.pause();
+  questionActive = true;
+
+  document.getElementById("heroOverlayEnd").style.display = "flex";
+}
+
+
+video.addEventListener("timeupdate", () => {
+
+  if (questionActive) return;
+
+  if (video.currentTime > 320 && !heroPopupEndShown) {
+    heroPopupEndShown = true;
+    showHeroPopupEnd();
+  }
+
+});
+
+
+function closeHeroPopupEnd() {
+  document.getElementById("heroOverlayEnd").style.display = "none";
+  questionActive = false;
+  storyVideo.play();
+}
+
 
 </script>
 <div id="kidMessage"></div>
@@ -583,7 +618,7 @@ video.addEventListener("timeupdate", () => {
  
 
   🦸 <strong>Mountain Hero Mission</strong><br>
-  Complete the hero activity sheet to save the mountain 🌄<br><br>
+  Complete the hero Activity 1 sheet to save the mountain 🌄<br><br>
 
   🔑 Ask your grown-up for the <strong>Hero Code</strong>
 </p>
@@ -603,6 +638,27 @@ video.addEventListener("timeupdate", () => {
 	 <div style="font-size:13px; opacity:0.8; margin-top:12px;">
   ⬇️ Scroll to read and unlock the story
 </div>
+  </div>
+</div>
+
+
+<!-- HERO CODE OVERLAY -->
+<div class="overlay" id="heroOverlayEnd" style="display:none;">
+  <div class="popup">
+    <h2>🎉 Great job! 🎉</h2>
+
+ <p>
+  ⚠️ <strong>You’ve completed the story of Samudra Manthan!</strong> But wait… 👀 <br><br>
+ 
+
+  🦸 <strong>There’s **one final mission** left</strong><br>
+  Complete the hero Activity 2, once done ask your grown-up to share picture of it and earn yout 🏅 **Ocean Churn Hero Badge** 🏅<br><br>
+ <strong>Are you ready? 😄</strong>
+</p>
+    <br> <br>
+    <button onclick="closeHeroPopupEnd()">Continue - to get Parent Guide Report</button>
+
+    
   </div>
 </div>
 
